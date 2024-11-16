@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Member Management - Waste Bank System</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+</head>
+<body class="bg-gray-100 font-sans" x-data="memberManagement()">
+    <div class="flex">
+        <!-- Sidebar -->
+        <aside class="bg-green-600 text-white w-64 min-h-screen p-6">
+            <h2 class="text-2xl font-bold mb-8">Admin Menu</h2>
+            <nav>
+                <ul class="space-y-4">
+                    <li><a class="block py-2 hover:bg-green-500 rounded" href="dashboard.html">Dashboard</a></li>
+                    <li><a class="block py-2 hover:bg-green-500 rounded" href="manajemen-jenis-sampah.html">Manajemen Jenis Sampah</a></li>
+                    <li><a class="block py-2 hover:bg-green-500 rounded" href="manajemen-member.html">Manajemen Member</a></li>
+                    <li><a class="block py-2 hover:bg-green-500 rounded" href="manajemen-transaksi-setoran-sampah.html">Transaksi Setoran Sampah</a></li>
+                    <li><a class="block py-2 hover:bg-green-500 rounded" href="pelaporan.html">Pelaporan</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-6">
+            <header class="flex justify-between items-center mb-6">
+                <h1 class="text-3xl font-bold">Manajemen Member</h1>
+                <div class="flex space-x-2">
+                    <button 
+                        @click="openAddMemberModal" 
+                        class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded"
+                    >
+                        Tambahkan Member Baru
+                    </button>
+                    <button 
+                        @click="openImportModal" 
+                        class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
+                    >
+                        Import Members
+                    </button>
+                </div>
+            </header>
+
+            <!-- Member List -->
+            <div class="bg-white shadow-md rounded-lg">
+                <table class="w-full">
+                    <thead class="bg-gray-200">
+                        <tr>
+                            <th class="p-3 text-left">Member ID</th>
+                            <th class="p-3 text-left">Nama</th>
+                            <th class="p-3 text-left">Kontak</th>
+                            <th class="p-3 text-left">Status</th>
+                            <th class="p-3 text-left">Edit</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <template x-for="(member, index) in members" :key="index">
+                            <tr class="border-b hover:bg-gray-100">
+                                <td class="p-3" x-text="member.memberId"></td>
+                                <td class="p-3">
+                                    <div class="flex items-center">
+                                        <img 
+                                            :src="member.profilePicture" 
+                                            class="w-10 h-10 rounded-full mr-3"
+                                        >
+                                        <span x-text="member.fullName"></span>
+                                    </div>
+                                </td>
+                                <td class="p-3" x-text="member.email"></td>
+                                <td class="p-3">
+                                    <span 
+                                        :class="{
+                                            'bg-green-200 text-green-800': member.status === 'Active',
+                                            'bg-yellow-200 text-yellow-800': member.status === 'Inactive',
+                                            'bg-red-200 text-red-800': member.status === 'Suspended'
+                                        }" 
+                                        class="px-2 py-1 rounded text-sm"
+                                        x-text="member.status"
+                                    ></span>
+                                </td>
+                                <td class="p-3">
+                                    <div class="flex space-x-2">
+                                        <button 
+                                            @click="viewMemberDetails(member)" 
+                                            class="text-blue-500 hover:text-blue-700"
+                                        >
+                                            View
+                                        </button>
+                                        <button 
+                                            @click="editMember(member)" 
+                                            class="text-green-500 hover:text-green-700"
+                                        >
+                                            Edit
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </template>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <!-- Menambahkan/Mengubah Member -->
+    <div 
+        x-show="addMemberModalOpen" 
+        class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center"
+    >
+        <div class="bg-white p-6 rounded-lg w-3/4 max-h-[90vh] overflow-y-auto">
+            <h2 class="text-2xl mb-4" x-text="modalTitle"></h2>
+            <form @submit.prevent="saveMember">
+                <div class="grid grid-cols-2 gap-4">
+                    <!-- Personal Information Section -->
+                    <div>
+                        <h3 class="text-xl font-semibold mb-4">Informasi Personal</h3>
+                        <div class="grid grid-cols-2 gap-4">
+                            <input 
+                                x-model="currentMember.fullName" 
+                                placeholder="Full Name" 
+                                required 
+                                class="p-2 border rounded"
+                            >
+                            <input 
+                                x-model="currentMember.dateOfBirth" 
+                                type="date" 
+                                placeholder="Date of Birth" 
+                                class="p-2 border rounded"
+                            >
+                            <select 
+                                x-model="currentMember.gender" 
+                                class="p-2 border rounded"
+                            >
+                                <option value="">Pilih Jenis Kelamin</option>
+                                <option value="Male">Laki-Laki</option>
+                                <option value="Female">Perempuan</option>
+                            </select>
+                            <input 
+                                x-model="currentMember.memberId" 
+                                placeholder="Unique Member ID" 
+                                required 
+                                class="p-2 border rounded"
+                            >
+                        </div>
+                    </div>
+
+                    <!-- Rincian Kontak -->
+                    <div>
+                        <h3 class="text-xl font-semibold mb-4">Rincian Kontak</h3>
+                        <div class="grid grid-cols-2 gap-4">
+                            <input 
+                                x-model="currentMember.phoneNumber" 
+                                placeholder="Primary Phone Number" 
+                                required 
+                                class="p-2 border rounded"
+                            >
+                            <input 
+                                x-model="currentMember.email" 
+                                type="email" 
+                                placeholder="Email Address" 
+                                required 
+                                class="p-2 border rounded"
+                            >
+                            <input 
+                                x-model="currentMember.postalAddress" 
+                                placeholder="Postal Address" 
+                                class="p-2 border rounded col-span-2"
+                            >
+                            <input 
+                                x-model="currentMember.residentialAddress" 
+                                placeholder="Residential Address" 
+                                class="p-2 border rounded col-span-2"
+                            >
+                        </div>
+                    </div>
+
+                    <!-- Rincian Membership -->
+                    <div>
+                        <h3 class="text-xl font-semibold mb-4">Rincian Membership</h3>
+                        <div class="grid grid-cols-2 gap-4">
+                            <input 
+                                x-model="currentMember.registrationDate" 
+                                type="date" 
+                                placeholder="Registration Date" 
+                                class="p-2 border rounded"
+                            >
+                            <input 
+                                x-model="currentMember.expirationDate" 
+                                type="date" 
+                                placeholder="Expiration Date" 
+                                class="p-2 border rounded"
+                            >
+                            <select 
+                                x-model="currentMember.status" 
+                                class="p-2 border rounded"
+                            >
+                                <option value="Active">Active</option>
+                                <option value="Inactive">Inactive</option>
+                                <option value="Suspended">Suspended</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Informasi Sistem -->
+                    <div>
+                        <h3 class="text-xl font-semibold mb-4">Informasi Sistem</h3>
+                        <div class="grid grid-cols-2 gap-4">
+                            <input 
+                                x-model="currentMember.accountCreationDate" 
+                                type="date" 
+                                placeholder="Account Creation Date" 
+                                class="p-2 border rounded"
+                            >
+                            <select 
+                                x-model="currentMember.accountStatus" 
+                                class="p-2 border rounded"
+                            >
+                                <option value="Active">Active</option>
+                                <option value="Suspended">Suspended</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-end space-x-2 mt-6">
+                    <button 
+                        type="button" 
+                        @click="addMemberModalOpen = false" 
+                        class="bg-gray-300 text-gray-700 px-4 py-2 rounded"
+                    >
+                        Cancel
+                    </button>
+                    <button 
+                        type="submit" 
+                        class="bg-green-500 text-white px-4 py-2 rounded"
+                    >
+                        Save Member
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function memberManagement() {
+            return {
+                members: [
+                    {
+                        memberId: 'MB001',
+                        fullName: 'John Doe',
+                        email: 'john.doe@example.com',
+                        status: 'Active',
+                        profilePicture: 'https://via.placeholder.com/150',
+                        phoneNumber: '+1 (555) 123-4567',
+                        dateOfBirth: '1990-05-15',
+                        gender: 'Male',
+                        postalAddress: '123 Green Street, Eco City',
+                        registrationDate: '2023-01-15',
+                        expirationDate: '2024-01-15',
+                        accountStatus: 'Active'
+                    }
+                ],
+                addMemberModalOpen: false,
+                modalTitle: 'Add New Member',
+                currentMember: {},
+
+                openAddMemberModal() {
+                    this.modalTitle = 'Add New Member';
+                    this.currentMember = {};
+                    this.addMemberModalOpen = true;
+                },
+
+                editMember(member) {
+                    this.modalTitle = 'Edit Member';
+                    this.currentMember = { ...member };
+                    this.addMemberModalOpen = true;
+                },
+
+                saveMember() {
+                    const index = this.members.findIndex(m => m.memberId === this.currentMember.memberId);
+                    
+                    if (index !== -1) {
+                        // Update existing member
+                        this.members[index] = { ...this.currentMember };
+                    } else {
+                        // Add new member
+                        this.members.push({ ...this.currentMember });
+                    }
+                    
+                    this.addMemberModalOpen = false;
+                },
+
+                viewMemberDetails(member) {
+                    // Implement detailed view logic
+                    alert(`Viewing details for ${member.fullName}`);
+                },
+
+                openImportModal() {
+                    alert('Import Members functionality to be implemented');
+                }
+            }
+        }
+    </script>
+</body>
+</html>

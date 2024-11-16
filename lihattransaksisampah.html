@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lihat Transaksi</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+</head>
+<body class="bg-gray-100 font-sans" x-data="wasteDepositManagement()">
+    <div class="flex">
+        <!-- Sidebar -->
+        <aside class="bg-green-600 text-white w-64 min-h-screen p-6">
+            <h2 class="text-2xl font-bold mb-8">Member Menu</h2>
+            <nav>
+                <ul class="space-y-4">
+                    <li><a class="block py-2 hover:bg-green-500 rounded" href="dashboardmember.html">Dashboard</a></li>
+                    <li><a class="block py-2 hover:bg-green-500 rounded" href="lihatjenissampah.html">Lihat Jenis Sampah</a></li>
+                    <li><a class="block py-2 hover:bg-green-500 rounded" href="lihattransaksisampah.html">Lihat Transaksi Sampah</a></li>
+                </ul>
+            </nav>
+        </aside>
+        <!-- Main Content -->
+        <main class="flex-1 p-6">
+            <header class="flex justify-between items-center mb-6">
+                <h1 class="text-3xl font-bold">Transaksi Setoran Sampah</h1>
+                
+            </header>
+
+            <!-- Transaction List -->
+            <div class="bg-white shadow-md rounded-lg">
+                <table class="w-full">
+                    <thead class="bg-gray-200">
+                        <tr>
+                            <th class="p-3 text-left">ID Transaksi</th>
+                            <th class="p-3 text-left">Member</th>
+                            <th class="p-3 text-left">Jenis Sampah</th>
+                            <th class="p-3 text-left">Kuantitas</th>
+                            <th class="p-3 text-left">Harga</th>
+                            <th class="p-3 text-left">Tanggal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <template x-for="(transaction, index) in transactions" :key="index">
+                            <tr class="border-b hover:bg-gray-100">
+                                <td class="p-3" x-text="transaction.transactionId"></td>
+                                <td class="p-3" x-text="transaction.memberName"></td>
+                                <td class="p-3" x-text="transaction.wasteType"></td>
+                                <td class="p-3" x-text="transaction.quantity"></td>
+                                <td class="p-3" x-text="'Rp ' + transaction.totalValue"></td>
+                                <td class="p-3" x-text="transaction.date"></td>
+                            </tr>
+                        </template>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    
+    
+</body>
+</html>
