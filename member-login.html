@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Waste Bank System</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        .fade-in {
+            animation: fadeIn 1s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+    <div class="bg-white shadow-lg rounded-lg p-8 w-96 fade-in">
+        <h1 class="text-2xl font-bold text-center mb-4">Welcome to Waste Bank System</h1>
+        <form @submit.prevent="login" form action="member-dashboard.html" method="get">
+            <div class="mb-4">
+                <label class="block text-sm font-semibold mb-2" for="email">Email</label>
+                <input 
+                    type="email" 
+                    id="email" 
+                    placeholder="Enter your email" 
+                    required 
+                    class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-green-300"
+                >
+            </div>
+            <div class="mb-4">
+                <label class="block text-sm font-semibold mb-2" for="password">Password</label>
+                <input 
+                    type="password" 
+                    id="password" 
+                    placeholder="Enter your password" 
+                    required 
+                    class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-green-300"
+                >
+            </div>
+            <button 
+                type="submit" 
+                class="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-2 rounded"
+            >
+                Login
+            </button>
+        </form>
+        <p class="text-center text-sm text-gray-500 mt-4">
+            Don't have an account? 
+            <a href="#" class="text-green-500 hover:underline">Sign up</a>
+        </p>
+    </div>
+    <script>
+        function login() {
+            alert('Login functionality to be implemented');
+        }
+        function populateForm() {
+            document.getElementById('email').value = 'user@example.com'; // Populate the email field
+            document.getElementById('password').value = 'password123';   // Populate the password field
+        }
+        window.onload = populateForm;
+
+    </script>
+</body>
+</html>

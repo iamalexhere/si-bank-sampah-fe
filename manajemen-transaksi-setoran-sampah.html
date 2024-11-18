@@ -11,7 +11,7 @@
     <div class="flex">
         <!-- Sidebar -->
         <aside class="bg-green-600 text-white w-64 min-h-screen p-6">
-            <h2 class="text-2xl font-bold mb-8">Admin Menu</h2>
+            <h2 class="text-2xl font-bold mb-8">Menu Admin</h2>
             <nav>
                 <ul class="space-y-4">
                     <li><a class="block py-2 hover:bg-green-500 rounded" href="dashboard.html">Dashboard</a></li>
@@ -150,7 +150,24 @@
     <script>
         function wasteDepositManagement() {
             return {
-                transactions: [],
+                transactions: [
+                    {
+                        transactionId: 'TRX1001',
+                        memberName: 'John Doe',
+                        wasteType: 'Plastic',
+                        quantity: 10,
+                        totalValue: 5,
+                        date: '2024-11-01',
+                    },
+                    {
+                        transactionId: 'TRX1002',
+                        memberName: 'Jane Smith',
+                        wasteType: 'Paper',
+                        quantity: 20,
+                        totalValue: 10,
+                        date: '2024-11-02',
+                    }
+                ],
                 addTransactionModalOpen: false,
                 currentTransaction: {
                     memberName: '',

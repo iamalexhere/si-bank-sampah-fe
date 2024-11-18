@@ -3,70 +3,89 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Waste Bank System</title>
+    <title>Waste Bank Management System</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <style>
-        .fade-in {
-            animation: fadeIn 1s ease-in-out;
-        }
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .hero-bg {
+            background-image: url('https://images.unsplash.com/photo-1606037150583-fb842a55bae7?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+            background-size: cover;
+            background-position: center;
         }
     </style>
 </head>
-<body class="bg-gray-100 flex items-center justify-center min-h-screen">
-    <div class="bg-white shadow-lg rounded-lg p-8 w-96 fade-in">
-        <h1 class="text-2xl font-bold text-center mb-4">Welcome to Waste Bank System</h1>
-        <form @submit.prevent="login" form action="dashboard.html" method="get">
-            <div class="mb-4">
-                <label class="block text-sm font-semibold mb-2" for="email">Email</label>
-                <input 
-                    type="email" 
-                    id="email" 
-                    placeholder="Enter your email" 
-                    required 
-                    class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-green-300"
-                >
-            </div>
-            <div class="mb-4">
-                <label class="block text-sm font-semibold mb-2" for="password">Password</label>
-                <input 
-                    type="password" 
-                    id="password" 
-                    placeholder="Enter your password" 
-                    required 
-                    class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-green-300"
-                >
-            </div>
-            <button 
-                type="submit" 
-                class="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-2 rounded"
-            >
-                Login
-            </button>
-        </form>
-        <p class="text-center text-sm text-gray-500 mt-4">
-            Don't have an account? 
-            <a href="#" class="text-green-500 hover:underline">Sign up</a>
-        </p>
-    </div>
-    <script>
-        function login() {
-            alert('Login functionality to be implemented');
-        }
-        function populateForm() {
-            document.getElementById('email').value = 'user@example.com'; // Populate the email field
-            document.getElementById('password').value = 'password123';   // Populate the password field
-        }
-        window.onload = populateForm;
+<body class="bg-gray-100">
+    <!-- Header -->
+    <header class="bg-green-600 text-white py-6">
+        <div class="max-w-7xl mx-auto px-4 flex justify-between items-center">
+            <h1 class="text-3xl font-bold">Sistem Informasi Bank Sampah</h1>
+            <nav class="space-x-4">
+                <a href="#services" class="hover:text-green-300">Layanan</a>
+                <a href="#about" class="hover:text-green-300">Tentang Kami</a>
+                <a href="#contact" class="hover:text-green-300">Kontak</a>
+                <a href="admin-login.html" class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded">Login as Admin</a>
+                <a href="member-login.html" class="bg-yellow-500 hover:bg-yellow-600 text-white py-2 px-4 rounded">Login as Member</a>
+            </nav>
+        </div>
+    </header>
 
-    </script>
+    <!-- Bagian Hero -->
+    <section class="hero-bg text-black py-20">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <h2 class="text-5xl font-bold mb-4">Bergabunglah dengan Kami dalam Membuat Perbedaan</h2>
+            <p class="mb-8 text-lg"> Bersama-sama, kita dapat menciptakan planet yang lebih bersih dan lebih hijau.</p>
+            <a href="#services" class="bg-green-500 hover:bg-green-600 text-white py-3 px-6 rounded-lg text-lg font-semibold"> Jelajahi Layanan Kami</a>
+        </div>
+    </section>
+
+    <!-- Bagian Layanan -->
+    <section id="services" class="py-20">
+        <div class="max-w-7xl mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-10">Layanan Kami</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+                <div class="bg-white p-6 rounded-lg shadow-lg text-center">
+                    <h3 class="text-xl font-semibold mb-3">Setor Sampah</h3>
+                    <p>Layanan setor sampah yang dapat diandalkan untuk rumah dan bisnis</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-lg text-center">
+                    <h3 class="text-xl font-semibold mb-3">Program Bank Sampah</h3>
+                    <p>Melestarikan lingkungan dan membangkitkan ekonomi</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-lg text-center">
+                    <h3 class="text-xl font-semibold mb-3">Kesadaran Masyarakat</h3>
+                    <p>Kami melibatkan masyarakat dalam menjaga lingkungan</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Bagian Tentang Kami -->
+    <section id="about" class="bg-gray-200 py-20">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <h2 class="text-3xl font-bold mb-10">Tentang kami</h2>
+            <p class="mb-6"> Kami berdedikasi untuk mempromosikan praktik pengelolaan limbah yang berkelanjutan yang bermanfaat bagi masyarakat dan lingkungan.</p>
+            <a href="#contact" class="bg-green-500 hover:bg-green-600 text-white py-3 px-6 rounded-lg text-lg font-semibold">Daftar</a>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-20">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <h2 class="text-3xl font-bold mb-10">Kontak Kami</h2>
+            <p class="mb-6">Silahkan Bertanya</p>
+            <form class="max-w-lg mx-auto">
+                <input type="text" class="border border-gray-300 p-3 w-full mb-4" placeholder="Your Name" required>
+                <input type="email" class="border border-gray-300 p-3 w-full mb-4" placeholder="Your Email" required>
+                <textarea class="border border-gray-300 p-3 w-full mb-4" rows="4" placeholder="Your Message" required></textarea>
+                <button type="submit" class="bg-green-500 hover:bg-green-600 text-white py-3 px-6 rounded-lg">Send Message</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-6">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            &copy; 2024 Sistem Informasi Bank Sampah. All rights reserved.
+        </div>
+    </footer>
 </body>
 </html>
