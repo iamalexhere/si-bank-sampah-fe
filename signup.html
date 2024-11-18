@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Waste Bank System</title>
+    <title>Create Account - Waste Bank System</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <style>
         .fade-in {
@@ -23,8 +23,18 @@
 </head>
 <body class="bg-gray-100 flex items-center justify-center min-h-screen">
     <div class="bg-white shadow-lg rounded-lg p-8 w-96 fade-in">
-        <h1 class="text-2xl font-bold text-center mb-4">Welcome to Waste Bank System</h1>
+        <h1 class="text-2xl font-bold text-center mb-4">Buat Akun</h1>
         <form @submit.prevent="login" form action="member-dashboard.html" method="get">
+            <div class="mb-4">
+                <label class="block text-sm font-semibold mb-2" for="email">Nama Lengkap</label>
+                <input 
+                    type="text" 
+                    id="name" 
+                    placeholder="Masukkan nama" 
+                    required 
+                    class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-green-300"
+                >
+            </div>
             <div class="mb-4">
                 <label class="block text-sm font-semibold mb-2" for="email">Email</label>
                 <input 
@@ -45,17 +55,30 @@
                     class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-green-300"
                 >
             </div>
+            <div class="mb-4">
+                <label class="block text-sm font-semibold mb-2" for="email">Nomor Telepon</label>
+                <input 
+                    type="text" 
+                    id="no-telp" 
+                    placeholder="Masukkan nomor telepon" 
+                    required 
+                    class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-green-300"
+                >
+            </div>
+            <div class="mb-4">
+                <label class="block text-sm font-semibold mb-2" for="email">Tanggal lahir</label>
+                <input type="date" id="birthdate" name="birthdate" required>
+            </div>
+
+
             <button 
                 type="submit" 
                 class="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-2 rounded"
             >
-                Login
+                Sign Up
             </button>
         </form>
-        <p class="text-center text-sm text-gray-500 mt-4">
-            Don't have an account? 
-            <a href="signup.html" class="text-green-500 hover:underline">Sign up</a>
-        </p>
+        
     </div>
     <script>
         function login() {
