@@ -146,21 +146,21 @@
         function wasteTypeManagement() {
             return {
                 wasteTypes: [
-                    { name: 'Plastic', unit: 'kg', price: 0.5, description: 'Recyclable plastic waste' },
-                    { name: 'Paper', unit: 'kg', price: 0.3, description: 'Paper and cardboard waste' }
+                    { name: 'Plastik', unit: 'kg', price: 0.5, description: 'Sampah plastik yang dapat didaur ulang' },
+                    { name: 'Kertas', unit: 'kg', price: 0.3, description: 'Sampah kertas dan kardus' }
                 ],
                 modalOpen: false,
-                modalTitle: 'Add Waste Type',
+                modalTitle: 'Tambahkan Jenis Sampah',
                 currentWasteType: {},
                 
                 openAddModal() {
-                    this.modalTitle = 'Add Waste Type';
+                    this.modalTitle = 'Tambahkan Jenis Sampah';
                     this.currentWasteType = { name: '', unit: 'kg', price: 0, description: '' };
                     this.modalOpen = true;
                 },
                 
                 editWasteType(waste) {
-                    this.modalTitle = 'Edit Waste Type';
+                    this.modalTitle = 'Ubah jenis sampah';
                     this.currentWasteType = { ...waste };
                     this.modalOpen = true;
                 },
@@ -182,7 +182,7 @@
                 },
                 
                 deleteWasteType(index) {
-                    if (confirm('Are you sure you want to delete this waste type?')) {
+                    if (confirm('Apakah Anda yakin ingin menghapus jenis sampah ini?')) {
                         this.wasteTypes.splice(index, 1);
                     }
                 }
