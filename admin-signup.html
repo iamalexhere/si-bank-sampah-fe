@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Account - Waste Bank System</title>
+    <title>Buat Akun - Sistem Informasi Bank Sampah</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <style>
         .fade-in {
@@ -24,9 +24,9 @@
 <body class="bg-gray-100 flex items-center justify-center min-h-screen">
     <div class="bg-white shadow-lg rounded-lg p-8 w-96 fade-in">
         <h1 class="text-2xl font-bold text-center mb-4">Buat Akun</h1>
-        <form @submit.prevent="login" form action="member-dashboard.html" method="get">
+        <form @submit.prevent="signup" action="dashboard.html" method="get">
             <div class="mb-4">
-                <label class="block text-sm font-semibold mb-2" for="email">Nama Lengkap</label>
+                <label class="block text-sm font-semibold mb-2" for="name">Nama Lengkap</label>
                 <input 
                     type="text" 
                     id="name" 
@@ -56,7 +56,7 @@
                 >
             </div>
             <div class="mb-4">
-                <label class="block text-sm font-semibold mb-2" for="email">Nomor Telepon</label>
+                <label class="block text-sm font-semibold mb-2" for="no-telp">Nomor Telepon</label>
                 <input 
                     type="text" 
                     id="no-telp" 
@@ -66,10 +66,15 @@
                 >
             </div>
             <div class="mb-4">
-                <label class="block text-sm font-semibold mb-2" for="email">Tanggal lahir</label>
-                <input type="date" id="birthdate" name="birthdate" required>
+                <label class="block text-sm font-semibold mb-2" for="birthdate">Tanggal Lahir</label>
+                <input 
+                    type="date" 
+                    id="birthdate" 
+                    name="birthdate" 
+                    required 
+                    class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-green-300"
+                >
             </div>
-
 
             <button 
                 type="submit" 
@@ -78,18 +83,18 @@
                 Sign Up
             </button>
         </form>
-        
     </div>
-    <script>
-        function login() {
-            alert('Login functionality to be implemented');
-        }
-        function populateForm() {
-            document.getElementById('email').value = 'user@example.com'; // Populate the email field
-            document.getElementById('password').value = 'password123';   // Populate the password field
-        }
-        window.onload = populateForm;
 
+    <script>
+        function populateForm() {
+            document.getElementById('name').value = 'John Doe';
+            document.getElementById('email').value = 'user@example.com';
+            document.getElementById('password').value = 'password123';
+            document.getElementById('no-telp').value = '08123456789';
+            document.getElementById('birthdate').value = '1990-01-01';
+        }
+
+        window.onload = populateForm;
     </script>
 </body>
 </html>
