@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Waste Deposit Transaction Management - Waste Bank System</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+</head>
+<body class="bg-gray-100 font-sans" x-data="wasteDepositManagement()">
+    <div class="flex">
+        <!-- Sidebar -->
+        <aside class="bg-green-600 text-white w-64 min-h-screen p-6">
+            <h2 class="text-2xl font-bold mb-8">Menu Admin</h2>
+            <nav>
+                <ul class="space-y-4">
+                    <li><a class="block py-2 hover:bg-green-500 rounded" href="dashboard.html">Dashboard</a></li>
+                    <li><a class="block py-2 hover:bg-green-500 rounded" href="tambah-transaksi-setoran-sampah.html">Tambah Transaksi Setoran Sampah</a></li>
+                    <li><a class="block py-2 hover:bg-green-500 rounded" href="manajemen-jenis-sampah.html">Manajemen Jenis Sampah</a></li>
+                    <li><a class="block py-2 hover:bg-green-500 rounded" href="manajemen-member.html">Manajemen Member</a></li>
+                    <li><a class="block py-2 hover:bg-green-500 rounded" href="list-transaksi-setoran-sampah.html">List Transaksi Setoran Sampah</a></li>
+                    <li><a class="block py-2 hover:bg-green-500 rounded" href="pelaporan.html">Pelaporan</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-6">
+            <header class="flex justify-between items-center mb-6">
+                <h1 class="text-3xl font-bold">Transaksi Setoran Sampah</h1>
+            </header>
+
+            <div class="mb-6">
+                <label class="block mb-2">Member Name</label>
+                <input 
+                    x-model="memberName" 
+                    placeholder="Enter Member Name" 
+                    class="p-2 border rounded w-full"
+                />
+            </div>
+
+            <div class="mb-6">
+                <label class="block mb-2">Filter Waste Type</label>
+                <input 
+                    x-model="filterText" 
+                    placeholder="Type to filter..." 
+                    class="p-2 border rounded w-full"
+                />
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+                <!-- Left Side: Waste Type Selection -->
+                <div class="bg-white p-4 rounded shadow">
+                    <h2 class="text-xl font-bold mb-4">Select Waste Type</h2>
+                    <div class="flex flex-wrap">
+                        <template x-for="waste in filteredWasteTypes()" :key="waste">
+                            <button 
+                                :class="{
+                                    'bg-blue-500 text-white': selectedWasteTypes.includes(waste),
+                                    'bg-gray-200 text-gray-800': !selectedWasteTypes.includes(waste)
+                                }" 
+                                @click="toggleWasteType(waste)" 
+                                class="m-1 px-4 py-2 rounded focus:outline-none"
+                            >
+                                <span x-text="waste"></span>
+                            </button>
+                        </template>
+                    </div>
+                </div>
+
+                <!-- Right Side: Summary -->
+                <div class="bg-white p-4 rounded shadow">
+                    <h2 class="text-xl font-bold mb-4">Summary</h2>
+                    <div class="mb-2">
+                        <p><strong>Waste Type:</strong> <span x-text="selectedWasteTypes.join(', ') || 'None'"></span></p>
+                        <p><strong>Quantity:</strong> <span x-text="totalQuantity + ' kg'"></span></p>
+                        <p><strong>Total Value:</strong> <span x-text="'$' + totalValue"></span></p>
+                    </div>
+                    <button 
+                        @click="confirmSubmit" 
+                        class="bg-green-500 text-white px-4 py-2 rounded"
+                    >
+                        Submit
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        function wasteDepositManagement() {
+            return {
+                memberName: '',
+                filterText: '',
+                selectedWasteTypes: [],
+                wasteTypes: ['Plastic', 'Paper', 'Metal', 'Organic', 'Electronics', 'Glass'],
+                
+                toggleWasteType(waste) {
+                    const index = this.selectedWasteTypes.indexOf(waste);
+                    if (index > -1) {
+                        // Remove waste type if already selected
+                        this.selectedWasteTypes.splice(index, 1);
+                    } else {
+                        // Add waste type if not selected
+                        this.selectedWasteTypes.push(waste);
+                    }
+                },
+
+                filteredWasteTypes() {
+                    return this.wasteTypes.filter(waste => 
+                        waste.toLowerCase().includes(this.filterText.toLowerCase())
+                    );
+                },
+
+                get totalQuantity() {
+                    return this.selectedWasteTypes.length; // Assuming quantity 1 for each selected type
+                },
+
+                get totalValue() {
+                    return this.totalQuantity * 0.5; // Assume each kg is worth $0.5
+                },
+
+                confirmSubmit() {
+                    if (this.memberName && this.selectedWasteTypes.length > 0) {
+                        if (confirm("Are you sure you want to submit this transaction?")) {
+                            alert('Transaction submitted successfully!');
+                            this.resetForm();
+                        }
+                    } else {
+                        alert("Please fill in all fields.");
+                    }
+                },
+
+                resetForm() {
+                    this.memberName = '';
+                    this.filterText = '';
+                    this.selectedWasteTypes = [];
+                }
+            }
+        }
+    </script>
+</body>
+</html>

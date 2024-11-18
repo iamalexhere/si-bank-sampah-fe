@@ -15,9 +15,10 @@
             <nav>
                 <ul class="space-y-4">
                     <li><a class="block py-2 hover:bg-green-500 rounded" href="dashboard.html">Dashboard</a></li>
+                    <li><a class="block py-2 hover:bg-green-500 rounded" href="tambah-transaksi-setoran-sampah.html">Tambah Transaksi Setoran Sampah</a></li>
                     <li><a class="block py-2 hover:bg-green-500 rounded" href="manajemen-jenis-sampah.html">Manajemen Jenis Sampah</a></li>
                     <li><a class="block py-2 hover:bg-green-500 rounded" href="manajemen-member.html">Manajemen Member</a></li>
-                    <li><a class="block py-2 hover:bg-green-500 rounded" href="manajemen-transaksi-setoran-sampah.html">Transaksi Setoran Sampah</a></li>
+                    <li><a class="block py-2 hover:bg-green-500 rounded" href="list-transaksi-setoran-sampah.html">List Transaksi Setoran Sampah</a></li>
                     <li><a class="block py-2 hover:bg-green-500 rounded" href="pelaporan.html">Pelaporan</a></li>
                 </ul>
             </nav>
@@ -27,20 +28,6 @@
         <main class="flex-1 p-6">
             <header class="flex justify-between items-center mb-6">
                 <h1 class="text-3xl font-bold">Manajemen Member</h1>
-                <div class="flex space-x-2">
-                    <button 
-                        @click="openAddMemberModal" 
-                        class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded"
-                    >
-                        Tambahkan Member Baru
-                    </button>
-                    <button 
-                        @click="openImportModal" 
-                        class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
-                    >
-                        Import Members
-                    </button>
-                </div>
             </header>
 
             <!-- Member List -->
@@ -52,7 +39,7 @@
                             <th class="p-3 text-left">Nama</th>
                             <th class="p-3 text-left">Kontak</th>
                             <th class="p-3 text-left">Status</th>
-                            <th class="p-3 text-left">Edit</th>
+                            <th class="p-3 text-left">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -74,7 +61,6 @@
                                         :class="{
                                             'bg-green-200 text-green-800': member.status === 'Active',
                                             'bg-yellow-200 text-yellow-800': member.status === 'Inactive',
-                                            'bg-red-200 text-red-800': member.status === 'Suspended'
                                         }" 
                                         class="px-2 py-1 rounded text-sm"
                                         x-text="member.status"
@@ -89,10 +75,10 @@
                                             View
                                         </button>
                                         <button 
-                                            @click="editMember(member)" 
-                                            class="text-green-500 hover:text-green-700"
+                                            @click="deleteMember(member)" 
+                                            class="text-red-500 hover:text-red-700"
                                         >
-                                            Edit
+                                            Delete
                                         </button>
                                     </div>
                                 </td>
@@ -101,146 +87,29 @@
                     </tbody>
                 </table>
             </div>
+
+            <!-- Modal for Member Details -->
+            <div 
+                x-show="selectedMember" 
+                class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50" 
+                x-transition
+            >
+                <div class="bg-white rounded-lg p-6 w-11/12 md:w-1/3">
+                    <h2 class="text-xl font-bold mb-4">Member Details</h2>
+                    <p><strong>Member ID:</strong> <span x-text="selectedMember.memberId"></span></p>
+                    <p><strong>Full Name:</strong> <span x-text="selectedMember.fullName"></span></p>
+                    <p><strong>Email:</strong> <span x-text="selectedMember.email"></span></p>
+                    <p><strong>Contact:</strong> <span x-text="selectedMember.phoneNumber"></span></p>
+                    <p><strong>Date of Birth:</strong> <span x-text="selectedMember.dateOfBirth"></span></p>
+                    <button 
+                        @click="selectedMember = null" 
+                        class="mt-4 bg-blue-500 text-white px-4 py-2 rounded"
+                    >
+                        Close
+                    </button>
+                </div>
+            </div>
         </main>
-    </div>
-
-    <!-- Menambahkan/Mengubah Member -->
-    <div 
-        x-show="addMemberModalOpen" 
-        class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center"
-    >
-        <div class="bg-white p-6 rounded-lg w-3/4 max-h-[90vh] overflow-y-auto">
-            <h2 class="text-2xl mb-4" x-text="modalTitle"></h2>
-            <form @submit.prevent="saveMember">
-                <div class="grid grid-cols-2 gap-4">
-                    <!-- Personal Information Section -->
-                    <div>
-                        <h3 class="text-xl font-semibold mb-4">Informasi Personal</h3>
-                        <div class="grid grid-cols-2 gap-4">
-                            <input 
-                                x-model="currentMember.fullName" 
-                                placeholder="Full Name" 
-                                required 
-                                class="p-2 border rounded"
-                            >
-                            <input 
-                                x-model="currentMember.dateOfBirth" 
-                                type="date" 
-                                placeholder="Date of Birth" 
-                                class="p-2 border rounded"
-                            >
-                            <select 
-                                x-model="currentMember.gender" 
-                                class="p-2 border rounded"
-                            >
-                                <option value="">Pilih Jenis Kelamin</option>
-                                <option value="Male">Laki-Laki</option>
-                                <option value="Female">Perempuan</option>
-                            </select>
-                            <input 
-                                x-model="currentMember.memberId" 
-                                placeholder="Unique Member ID" 
-                                required 
-                                class="p-2 border rounded"
-                            >
-                        </div>
-                    </div>
-
-                    <!-- Rincian Kontak -->
-                    <div>
-                        <h3 class="text-xl font-semibold mb-4">Rincian Kontak</h3>
-                        <div class="grid grid-cols-2 gap-4">
-                            <input 
-                                x-model="currentMember.phoneNumber" 
-                                placeholder="Primary Phone Number" 
-                                required 
-                                class="p-2 border rounded"
-                            >
-                            <input 
-                                x-model="currentMember.email" 
-                                type="email" 
-                                placeholder="Email Address" 
-                                required 
-                                class="p-2 border rounded"
-                            >
-                            <input 
-                                x-model="currentMember.postalAddress" 
-                                placeholder="Postal Address" 
-                                class="p-2 border rounded col-span-2"
-                            >
-                            <input 
-                                x-model="currentMember.residentialAddress" 
-                                placeholder="Residential Address" 
-                                class="p-2 border rounded col-span-2"
-                            >
-                        </div>
-                    </div>
-
-                    <!-- Rincian Membership -->
-                    <div>
-                        <h3 class="text-xl font-semibold mb-4">Rincian Membership</h3>
-                        <div class="grid grid-cols-2 gap-4">
-                            <input 
-                                x-model="currentMember.registrationDate" 
-                                type="date" 
-                                placeholder="Registration Date" 
-                                class="p-2 border rounded"
-                            >
-                            <input 
-                                x-model="currentMember.expirationDate" 
-                                type="date" 
-                                placeholder="Expiration Date" 
-                                class="p-2 border rounded"
-                            >
-                            <select 
-                                x-model="currentMember.status" 
-                                class="p-2 border rounded"
-                            >
-                                <option value="Active">Active</option>
-                                <option value="Inactive">Inactive</option>
-                                <option value="Suspended">Suspended</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <!-- Informasi Sistem -->
-                    <div>
-                        <h3 class="text-xl font-semibold mb-4">Informasi Sistem</h3>
-                        <div class="grid grid-cols-2 gap-4">
-                            <input 
-                                x-model="currentMember.accountCreationDate" 
-                                type="date" 
-                                placeholder="Account Creation Date" 
-                                class="p-2 border rounded"
-                            >
-                            <select 
-                                x-model="currentMember.accountStatus" 
-                                class="p-2 border rounded"
-                            >
-                                <option value="Active">Active</option>
-                                <option value="Suspended">Suspended</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="flex justify-end space-x-2 mt-6">
-                    <button 
-                        type="button" 
-                        @click="addMemberModalOpen = false" 
-                        class="bg-gray-300 text-gray-700 px-4 py-2 rounded"
-                    >
-                        Cancel
-                    </button>
-                    <button 
-                        type="submit" 
-                        class="bg-green-500 text-white px-4 py-2 rounded"
-                    >
-                        Save Member
-                    </button>
-                </div>
-            </form>
-        </div>
     </div>
 
     <script>
@@ -254,51 +123,37 @@
                         status: 'Active',
                         profilePicture: 'https://via.placeholder.com/150',
                         phoneNumber: '+1 (555) 123-4567',
-                        dateOfBirth: '1990-05-15',
-                        gender: 'Male',
-                        postalAddress: '123 Green Street, Eco City',
-                        registrationDate: '2023-01-15',
-                        expirationDate: '2024-01-15',
-                        accountStatus: 'Active'
+                        dateOfBirth: '1990-05-15'
+                    },
+                    {
+                        memberId: 'MB002',
+                        fullName: 'Jane Smith',
+                        email: 'jane.smith@example.com',
+                        status: 'Active',
+                        profilePicture: 'https://via.placeholder.com/150',
+                        phoneNumber: '+1 (555) 987-6543',
+                        dateOfBirth: '1985-07-21'
+                    },
+                    {
+                        memberId: 'MB003',
+                        fullName: 'Alice Johnson',
+                        email: 'alice.johnson@example.com',
+                        status: 'Active',
+                        profilePicture: 'https://via.placeholder.com/150',
+                        phoneNumber: '+1 (555) 555-5555',
+                        dateOfBirth: '1992-03-10'
                     }
                 ],
-                addMemberModalOpen: false,
-                modalTitle: 'Add New Member',
-                currentMember: {},
-
-                openAddMemberModal() {
-                    this.modalTitle = 'Add New Member';
-                    this.currentMember = {};
-                    this.addMemberModalOpen = true;
-                },
-
-                editMember(member) {
-                    this.modalTitle = 'Edit Member';
-                    this.currentMember = { ...member };
-                    this.addMemberModalOpen = true;
-                },
-
-                saveMember() {
-                    const index = this.members.findIndex(m => m.memberId === this.currentMember.memberId);
-                    
-                    if (index !== -1) {
-                        // Update existing member
-                        this.members[index] = { ...this.currentMember };
-                    } else {
-                        // Add new member
-                        this.members.push({ ...this.currentMember });
-                    }
-                    
-                    this.addMemberModalOpen = false;
-                },
+                selectedMember: null,
 
                 viewMemberDetails(member) {
-                    // Implement detailed view logic
-                    alert(`Viewing details for ${member.fullName}`);
+                    this.selectedMember = member;
                 },
 
-                openImportModal() {
-                    alert('Import Members functionality to be implemented');
+                deleteMember(member) {
+                    if (confirm(`Are you sure you want to delete ${member.fullName}?`)) {
+                        this.members = this.members.filter(m => m.memberId !== member.memberId);
+                    }
                 }
             }
         }
