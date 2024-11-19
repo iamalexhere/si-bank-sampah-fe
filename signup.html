@@ -23,14 +23,34 @@
 </head>
 <body class="bg-gray-100 flex items-center justify-center min-h-screen">
     <div class="bg-white shadow-lg rounded-lg p-8 w-96 fade-in">
-        <h1 class="text-2xl font-bold text-center mb-4">Welcome to Waste Bank System</h1>
-        <form @submit.prevent="login" form action="dashboard.html" method="get">
+        <h1 class="text-2xl font-bold text-center mb-4">Selamat datang, Pengguna Baru Bank Sampah</h1>
+        <form @submit.prevent="login" form action="loginmember.html" method="get">
+            <div class="mb-4">
+                <label class="block text-sm font-semibold mb-2" for="nama">Nama</label>
+                <input 
+                    type="text" 
+                    id="nama" 
+                    placeholder="Masukkan nama Anda" 
+                    required 
+                    class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-green-300"
+                >
+            </div>
             <div class="mb-4">
                 <label class="block text-sm font-semibold mb-2" for="email">Email</label>
                 <input 
                     type="email" 
                     id="email" 
-                    placeholder="Enter your email" 
+                    placeholder="Masukkan usermname email Anda" 
+                    required 
+                    class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-green-300"
+                >
+            </div>
+            <div class="mb-4">
+                <label class="block text-sm font-semibold mb-2" for="email">No HP</label>
+                <input 
+                    type="text" 
+                    id="noHP" 
+                    placeholder="Masukkan nomor HP Anda" 
                     required 
                     class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-green-300"
                 >
@@ -40,7 +60,7 @@
                 <input 
                     type="password" 
                     id="password" 
-                    placeholder="Enter your password" 
+                    placeholder="Masukkan password Anda" 
                     required 
                     class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-green-300"
                 >
@@ -49,22 +69,18 @@
                 type="submit" 
                 class="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-2 rounded"
             >
-                Login
+                Sign Up
             </button>
         </form>
         <p class="text-center text-sm text-gray-500 mt-4">
-            Don't have an account? 
-            <a href="#" class="text-green-500 hover:underline">Sign up</a>
+            <a href="loginmember.html" class="text-green-500 hover:underline">Kembali ke Login</a>
         </p>
     </div>
     <script>
         function login() {
             alert('Login functionality to be implemented');
         }
-        function populateForm() {
-            document.getElementById('email').value = 'user@example.com'; // Populate the email field
-            document.getElementById('password').value = 'password123';   // Populate the password field
-        }
+        
         window.onload = populateForm;
 
     </script>
