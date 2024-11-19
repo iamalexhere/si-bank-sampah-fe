@@ -23,14 +23,14 @@
             </nav>
         </aside>
 
-        <!-- Main Content -->
+        <!-- Konten Utama -->
         <main class="flex-1 p-6">
             <header class="flex justify-between items-center mb-6">
                 <h1 class="text-3xl font-bold">Transaksi Setoran Sampah</h1>
             </header>
 
             <div class="mb-6">
-                <label class="block mb-2">Member Name</label>
+                <label class="block mb-2">Nama Member</label>
                 <input 
                     x-model="memberName" 
                     placeholder="Enter Member Name" 
@@ -39,7 +39,7 @@
             </div>
 
             <div class="mb-6">
-                <label class="block mb-2">Filter Waste Type</label>
+                <label class="block mb-2">Filter Jenis Sampah</label>
                 <input 
                     x-model="filterText" 
                     placeholder="Type to filter..." 
@@ -48,15 +48,15 @@
             </div>
 
             <div class="grid grid-cols-2 gap-4">
-                <!-- Left Side: Waste Type Selection -->
+                <!-- Bagian kiri: Memilih jenis sampah -->
                 <div class="bg-white p-4 rounded shadow">
                     <h2 class="text-xl font-bold mb-4">Select Waste Type</h2>
                     <div class="flex flex-wrap">
                         <template x-for="waste in filteredWasteTypes()" :key="waste">
                             <button 
                                 :class="{
-                                    'bg-blue-500 text-white': selectedWasteTypes.includes(waste),
-                                    'bg-gray-200 text-gray-800': !selectedWasteTypes.includes(waste)
+                                    'bg-blue-500 text-white': selectedWasteDetails[waste] !== undefined,
+                                    'bg-gray-200 text-gray-800': selectedWasteDetails[waste] === undefined
                                 }" 
                                 @click="toggleWasteType(waste)" 
                                 class="m-1 px-4 py-2 rounded focus:outline-none"
@@ -66,29 +66,40 @@
                         </template>
                     </div>
                     <div class="mt-4">
-                        <label class="block mb-2">Quantity (kg)</label>
-                        <input 
-                            x-model.number="quantity" 
-                            type="number" 
-                            min="1" 
-                            class="p-2 border rounded w-full"
-                        >
-                        <button 
-                            @click="addSelectedWaste()"
-                            class="mt-2 bg-green-500 text-white px-4 py-2 rounded"
-                        >
-                            Add More Quantity
-                        </button>
+                        <h2 class="text-xl font-bold mb-4">Selected Waste Types</h2>
+                        <template x-for="(quantity, wasteType) in selectedWasteDetails" :key="wasteType">
+                            <div class="flex items-center mb-2">
+                                <span class="mr-4 font-medium" x-text="wasteType"></span>
+                                <input 
+                                    x-model.number="selectedWasteDetails[wasteType]" 
+                                    type="number" 
+                                    min="1" 
+                                    class="p-2 border rounded w-20 mr-2"
+                                >
+                                <button 
+                                    @click="incrementQuantity(wasteType)" 
+                                    class="bg-blue-500 text-white px-2 py-1 rounded"
+                                >
+                                    +
+                                </button>
+                                <button 
+                                    @click="decrementQuantity(wasteType)" 
+                                    class="bg-red-500 text-white px-2 py-1 rounded ml-2"
+                                >
+                                    -
+                                </button>
+                            </div>
+                        </template>
                     </div>
                 </div>
 
-                <!-- Right Side: Summary -->
+                <!-- Bagian Kanan: Ringkasan -->
                 <div class="bg-white p-4 rounded shadow">
                     <h2 class="text-xl font-bold mb-4">Summary</h2>
                     <div class="mb-2">
-                        <p><strong>Waste Type:</strong> <span x-text="selectedWasteTypes.join(', ') || 'None'"></span></p>
-                        <p><strong>Total Quantity:</strong> <span x-text="totalQuantity + ' kg'"></span></p>
-                        <p><strong>Total Value:</strong> <span x-text="'$' + totalValue"></span></p>
+                        <p><strong>Jenis Sampah:</strong> <span x-text="Object.keys(selectedWasteDetails).join(', ') || 'None'"></span></p>
+                        <p><strong>Kuantitas Total:</strong> <span x-text="totalQuantity + ' kg'"></span></p>
+                        <p><strong>Nilai Total:</strong> <span x-text="'Rp' + totalValue"></span></p>
                     </div>
                     <button 
                         @click="confirmSubmit" 
@@ -100,32 +111,49 @@
             </div>
 
             <!-- Transaction List -->
-            <div class="bg-white shadow-md rounded-lg mt-6">
-                <table class="w-full">
-                    <thead class="bg-gray-200">
-                        <tr>
-                            <th class="p-3 text-left">Transaction ID</th>
-                            <th class="p-3 text-left">Member</th>
-                            <th class="p-3 text-left">Waste Type</th>
-                            <th class="p-3 text-left">Quantity</th>
-                            <th class="p-3 text-left">Total Value</th>
-                            <th class="p-3 text-left">Date</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <template x-for="(transaction, index) in transactions" :key="index">
-                            <tr class="border-b hover:bg-gray-100">
-                                <td class="p-3" x-text="transaction.transactionId"></td>
-                                <td class="p-3" x-text="transaction.memberName"></td>
-                                <td class="p-3" x-text="transaction.wasteType"></td>
-                                <td class="p-3" x-text="transaction.quantity"></td>
-                                <td class="p-3" x-text="'$' + transaction.totalValue"></td>
-                                <td class="p-3" x-text="transaction.date"></td>
-                            </tr>
-                        </template>
-                    </tbody>
-                </table>
-            </div>
+            <!-- Transaction List -->
+<div class="bg-white shadow-md rounded-lg mt-6">
+    <table class="w-full">
+        <thead class="bg-gray-200">
+            <tr>
+                <th class="p-3 text-left">ID Transaksi</th>
+                <th class="p-3 text-left">Member</th>
+                <th class="p-3 text-left">Jenis Sampah</th>
+                <th class="p-3 text-left">Kuantitas</th>
+                <th class="p-3 text-left">Nilai Total</th>
+                <th class="p-3 text-left">Tanggal</th>
+                <th class="p-3 text-left">Aksi</th>
+            </tr>
+        </thead>
+        <tbody>
+            <template x-for="(transaction, index) in transactions" :key="index">
+                <tr class="border-b hover:bg-gray-100">
+                    <td class="p-3" x-text="transaction.transactionId"></td>
+                    <td class="p-3" x-text="transaction.memberName"></td>
+                    <td class="p-3" x-text="transaction.wasteType"></td>
+                    <td class="p-3" x-text="transaction.quantity"></td>
+                    <td class="p-3" x-text="'Rp' + transaction.totalValue"></td>
+                    <td class="p-3" x-text="transaction.date"></td>
+                    <td class="p-3">
+                        <button 
+                            class="bg-green-500 text-white px-3 py-1 rounded-md hover:bg-green-600"
+                            @click="handleMasuk(transaction.transactionId)"
+                        >
+                            Masuk
+                        </button>
+                        <button 
+                            class="bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600 ml-2"
+                            @click="handleKeluar(transaction.transactionId)"
+                        >
+                            Keluar
+                        </button>
+                    </td>
+                </tr>
+            </template>
+        </tbody>
+    </table>
+</div>
+
         </main>
     </div>
 
@@ -134,19 +162,27 @@
             return {
                 memberName: '',
                 filterText: '',
-                selectedWasteTypes: [],
-                quantity: 1,
-                wasteTypes: ['Plastic', 'Paper', 'Metal', 'Organic', 'Electronics', 'Glass'],
+                selectedWasteDetails: {}, // { "Plastik": 2, "Kertas": 1 }
+                wasteTypes: ['Plastik', 'Kertas', 'Lampu', 'Sepatu', 'Buku Tulis', 'Duplek'],
                 transactions: [],
                 
                 toggleWasteType(waste) {
-                    const index = this.selectedWasteTypes.indexOf(waste);
-                    if (index > -1) {
-                        // Remove waste type if already selected
-                        this.selectedWasteTypes.splice(index, 1);
+                    if (this.selectedWasteDetails[waste]) {
+                        delete this.selectedWasteDetails[waste];
                     } else {
-                        // Add waste type if not selected
-                        this.selectedWasteTypes.push(waste);
+                        this.selectedWasteDetails[waste] = 1; // Default kuantitas
+                    }
+                },
+
+                incrementQuantity(wasteType) {
+                    if (this.selectedWasteDetails[wasteType] !== undefined) {
+                        this.selectedWasteDetails[wasteType]++;
+                    }
+                },
+
+                decrementQuantity(wasteType) {
+                    if (this.selectedWasteDetails[wasteType] > 1) {
+                        this.selectedWasteDetails[wasteType]--;
                     }
                 },
 
@@ -157,37 +193,32 @@
                 },
 
                 get totalQuantity() {
-                    return this.selectedWasteTypes.length * this.quantity; // Total based on selected types and quantity
+                    return Object.values(this.selectedWasteDetails).reduce((sum, qty) => sum + qty, 0);
                 },
 
                 get totalValue() {
-                    return this.totalQuantity * 0.5; // Assume each kg is worth $0.5
-                },
-
-                addSelectedWaste() {
-                    // Simply adds the selected waste type with the specified quantity
-                    this.quantity = this.quantity; // No need to change it, just showing the action
+                    return this.totalQuantity * 100; // Asumsi nilai Rp100/kg
                 },
 
                 confirmSubmit() {
-                    if (this.memberName && this.selectedWasteTypes.length > 0) {
-                        if (confirm("Are you sure you want to submit this transaction?")) {
+                    if (this.memberName && Object.keys(this.selectedWasteDetails).length > 0) {
+                        if (confirm("Apakah Anda ingin mengirimkan transaksi ini?")) {
                             this.saveTransaction();
                             this.resetForm();
                         }
                     } else {
-                        alert("Please fill in all fields.");
+                        alert("Harap isi semua kolom.");
                     }
                 },
 
                 saveTransaction() {
                     const totalVal = this.totalValue; 
-                    const transactionId = 'TRX' + Math.floor(Math.random() * 10000); // Random ID for demo
+                    const transactionId = 'TRX' + Math.floor(Math.random() * 10000); // Random ID untuk demo
                     const date = new Date().toISOString().split('T')[0];
                     this.transactions.push({
                         transactionId: transactionId,
                         memberName: this.memberName,
-                        wasteType: this.selectedWasteTypes.join(', '),
+                        wasteType: Object.entries(this.selectedWasteDetails).map(([waste, qty]) => `${waste} (${qty} kg)`).join(', '),
                         quantity: this.totalQuantity,
                         totalValue: totalVal,
                         date: date
@@ -196,11 +227,9 @@
 
                 resetForm() {
                     this.memberName = '';
-                    this.filterText = '';
-                    this.selectedWasteTypes = [];
-                    this.quantity = 1; // Reset quantity to default
+                    this.selectedWasteDetails = {};
                 }
-            }
+            };
         }
     </script>
 </body>

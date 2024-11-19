@@ -52,7 +52,7 @@
                             <tr class="border-b">
                                 <td class="p-3" x-text="waste.name"></td>
                                 <td class="p-3" x-text="waste.unit"></td>
-                                <td class="p-3" x-text="'$' + waste.price"></td>
+                                <td class="p-3" x-text="'Rp' + waste.price"></td>
                                 <td class="p-3" x-text="waste.description"></td>
                                 <td class="p-3">
                                     <div class="flex space-x-2">
@@ -146,8 +146,8 @@
         function wasteTypeManagement() {
             return {
                 wasteTypes: [
-                    { name: 'Plastik', unit: 'kg', price: 0.5, description: 'Sampah plastik yang dapat didaur ulang' },
-                    { name: 'Kertas', unit: 'kg', price: 0.3, description: 'Sampah kertas dan kardus' }
+                    { name: 'Plastik', unit: 'kg', price: 100, description: 'Sampah plastik yang dapat didaur ulang' },
+                    { name: 'Kertas', unit: 'kg', price: 720, description: 'Sampah kertas dan kardus' }
                 ],
                 modalOpen: false,
                 modalTitle: 'Tambahkan Jenis Sampah',
