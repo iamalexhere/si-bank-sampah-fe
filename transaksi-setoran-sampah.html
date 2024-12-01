@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Transaksi Setoran Sampah - Sistem Informasi Bank Sampah</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <script
+      src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"
+      defer
+    ></script>
+  </head>
+  <body class="bg-gray-100 font-sans" x-data="wasteDepositManagement()">
+    <div class="flex">
+      <!-- Sidebar -->
+      <aside class="bg-green-600 text-white w-64 min-h-screen p-6">
+        <h2 class="text-2xl font-bold mb-8">Menu Admin</h2>
+        <nav>
+          <ul class="space-y-4">
+            <li>
+              <a
+                class="block py-2 hover:bg-green-500 rounded"
+                href="dashboard.html"
+                >Dashboard</a
+              >
+            </li>
+            <li>
+              <a
+                class="block py-2 hover:bg-green-500 rounded"
+                href="manajemen-jenis-sampah.html"
+                >Manajemen Jenis Sampah</a
+              >
+            </li>
+            <li>
+              <a
+                class="block py-2 hover:bg-green-500 rounded"
+                href="manajemen-member.html"
+                >Manajemen Member</a
+              >
+            </li>
+            <li>
+              <a
+                class="block py-2 hover:bg-green-500 rounded"
+                href="transaksi-setoran-sampah.html"
+                >Transaksi Setoran</a
+              >
+            </li>
+            <li>
+              <a
+                class="block py-2 hover:bg-green-500 rounded"
+                href="pelaporan.html"
+                >Pelaporan</a
+              >
+            </li>
+          </ul>
+        </nav>
+      </aside>
+
+      <!-- Konten Utama -->
+      <main class="flex-1 p-6">
+        <header class="flex justify-between items-center mb-6">
+          <h1 class="text-3xl font-bold">Transaksi Setoran Sampah</h1>
+        </header>
+
+        <div class="mb-6">
+          <label class="block mb-2">Nama Member</label>
+          <input
+            x-model="memberName"
+            placeholder="Masukkan nama member"
+            class="p-2 border rounded w-full"
+          />
+        </div>
+
+        <div class="mb-6">
+          <label class="block mb-2">Filter Jenis Sampah</label>
+          <input
+            x-model="filterText"
+            placeholder="Ketik untuk memfilter..."
+            class="p-2 border rounded w-full"
+          />
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <!-- Bagian kiri: Memilih jenis sampah -->
+          <div class="bg-white p-4 rounded shadow">
+            <h2 class="text-xl font-bold mb-4">Pilih Jenis Sampah</h2>
+            <div class="flex flex-wrap">
+              <template x-for="waste in filteredWasteTypes()" :key="waste">
+                <button
+                  :class="{
+                                    'bg-blue-500 text-white': selectedWasteDetails[waste] !== undefined,
+                                    'bg-gray-200 text-gray-800': selectedWasteDetails[waste] === undefined
+                                }"
+                  @click="toggleWasteType(waste)"
+                  class="m-1 px-4 py-2 rounded focus:outline-none"
+                >
+                  <span x-text="waste"></span>
+                </button>
+              </template>
+            </div>
+            <div class="mt-4">
+              <h2 class="text-xl font-bold mb-4">Jenis Sampah yang Dipilih</h2>
+              <template
+                x-for="(quantity, wasteType) in selectedWasteDetails"
+                :key="wasteType"
+              >
+                <div class="flex items-center mb-2">
+                  <span class="mr-4 font-medium" x-text="wasteType"></span>
+                  <input
+                    x-model.number="selectedWasteDetails[wasteType]"
+                    type="number"
+                    min="1"
+                    class="p-2 border rounded w-20 mr-2"
+                  />
+                  <button
+                    @click="incrementQuantity(wasteType)"
+                    class="bg-blue-500 text-white px-2 py-1 rounded"
+                  >
+                    +
+                  </button>
+                  <button
+                    @click="decrementQuantity(wasteType)"
+                    class="bg-red-500 text-white px-2 py-1 rounded ml-2"
+                  >
+                    -
+                  </button>
+                </div>
+              </template>
+            </div>
+          </div>
+
+          <!-- Bagian Kanan: Ringkasan -->
+          <div class="bg-white p-4 rounded shadow">
+            <h2 class="text-xl font-bold mb-4">Ringkasan</h2>
+            <div class="mb-2">
+              <p>
+                <strong>Jenis Sampah:</strong>
+                <span
+                  x-text="Object.keys(selectedWasteDetails).join(', ') || 'Tidak ada'"
+                ></span>
+              </p>
+              <p>
+                <strong>Kuantitas Total:</strong>
+                <span x-text="totalQuantity + ' kg'"></span>
+              </p>
+              <p>
+                <strong>Nilai Total:</strong>
+                <span x-text="'Rp' + totalValue"></span>
+              </p>
+            </div>
+            <button
+              @click="confirmSubmit"
+              class="bg-green-500 text-white px-4 py-2 rounded"
+            >
+              Kirim
+            </button>
+          </div>
+        </div>
+
+        <!-- Transaction List -->
+        <!-- Transaction List -->
+        <div class="bg-white shadow-md rounded-lg mt-6">
+          <table class="w-full">
+            <thead class="bg-gray-200">
+              <tr>
+                <th class="p-3 text-left">ID Transaksi</th>
+                <th class="p-3 text-left">Member</th>
+                <th class="p-3 text-left">Jenis Sampah</th>
+                <th class="p-3 text-left">Kuantitas</th>
+                <th class="p-3 text-left">Nilai Total</th>
+                <th class="p-3 text-left">Tanggal</th>
+                <th class="p-3 text-left">Aksi</th>
+              </tr>
+            </thead>
+            <tbody>
+              <template
+                x-for="(transaction, index) in transactions"
+                :key="index"
+              >
+                <tr class="border-b hover:bg-gray-100">
+                  <td class="p-3" x-text="transaction.transactionId"></td>
+                  <td class="p-3" x-text="transaction.memberName"></td>
+                  <td class="p-3" x-text="transaction.wasteType"></td>
+                  <td class="p-3" x-text="transaction.quantity"></td>
+                  <td class="p-3" x-text="'Rp' + transaction.totalValue"></td>
+                  <td class="p-3" x-text="transaction.date"></td>
+                  <td class="p-3">
+                    <button
+                      class="bg-green-500 text-white px-3 py-1 rounded-md hover:bg-green-600"
+                      @click="handleMasuk(transaction.transactionId)"
+                    >
+                      Masuk
+                    </button>
+                    <button
+                      class="bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600 ml-2"
+                      @click="handleKeluar(transaction.transactionId)"
+                    >
+                      Keluar
+                    </button>
+                  </td>
+                </tr>
+              </template>
+            </tbody>
+          </table>
+        </div>
+      </main>
+    </div>
+
+    <script>
+      function wasteDepositManagement() {
+        return {
+          // Nama anggota yang menyetorkan sampah
+          memberName: "",
+
+          // Teks untuk memfilter jenis sampah berdasarkan input pengguna
+          filterText: "",
+
+          // Detail jenis sampah yang dipilih dan jumlahnya (key-value pair)
+          selectedWasteDetails: {}, // Contoh: { "Plastik": 2, "Kertas": 1 }
+
+          // Daftar semua jenis sampah yang tersedia
+          wasteTypes: [
+            "Plastik",
+            "Kertas",
+            "Lampu",
+            "Sepatu",
+            "Buku Tulis",
+            "Duplek",
+          ],
+
+          // Daftar transaksi yang telah dikonfirmasi
+          transactions: [],
+
+          // Menambahkan atau menghapus jenis sampah ke/dari daftar pilihan pengguna
+          toggleWasteType(waste) {
+            if (this.selectedWasteDetails[waste]) {
+              // Jika jenis sampah sudah dipilih, hapus dari daftar
+              delete this.selectedWasteDetails[waste];
+            } else {
+              // Jika belum dipilih, tambahkan dengan kuantitas default 1
+              this.selectedWasteDetails[waste] = 1;
+            }
+          },
+
+          // Menambah kuantitas jenis sampah yang dipilih
+          incrementQuantity(wasteType) {
+            if (this.selectedWasteDetails[wasteType] !== undefined) {
+              this.selectedWasteDetails[wasteType]++;
+            }
+          },
+
+          // Mengurangi kuantitas jenis sampah yang dipilih (tidak boleh kurang dari 1)
+          decrementQuantity(wasteType) {
+            if (this.selectedWasteDetails[wasteType] > 1) {
+              this.selectedWasteDetails[wasteType]--;
+            }
+          },
+
+          // Mengembalikan daftar jenis sampah yang difilter berdasarkan teks pencarian
+          filteredWasteTypes() {
+            return this.wasteTypes.filter((waste) =>
+              waste.toLowerCase().includes(this.filterText.toLowerCase())
+            );
+          },
+
+          // Properti terhitung (computed property) untuk total kuantitas semua jenis sampah yang dipilih
+          get totalQuantity() {
+            return Object.values(this.selectedWasteDetails).reduce(
+              (sum, qty) => sum + qty,
+              0
+            );
+          },
+
+          // Properti terhitung untuk total nilai dari semua jenis sampah berdasarkan kuantitas dan harga per kg (Rp100/kg)
+          get totalValue() {
+            return this.totalQuantity * 100; // Asumsi nilai Rp100/kg
+          },
+
+          // Mengonfirmasi sebelum menyimpan transaksi
+          confirmSubmit() {
+            // Cek apakah nama anggota diisi dan ada jenis sampah yang dipilih
+            if (
+              this.memberName &&
+              Object.keys(this.selectedWasteDetails).length > 0
+            ) {
+              // Tampilkan dialog konfirmasi
+              if (confirm("Apakah Anda ingin mengirimkan transaksi ini?")) {
+                this.saveTransaction(); // Simpan transaksi jika dikonfirmasi
+                this.resetForm(); // Reset form setelah menyimpan
+              }
+            } else {
+              // Beri peringatan jika data belum lengkap
+              alert("Harap isi semua kolom.");
+            }
+          },
+
+          // Menyimpan transaksi ke dalam daftar `transactions`
+          saveTransaction() {
+            const totalVal = this.totalValue; // Total nilai transaksi
+            const transactionId = "TRX" + Math.floor(Math.random() * 10000); // ID transaksi acak untuk demo
+            const date = new Date().toISOString().split("T")[0]; // Tanggal transaksi dalam format YYYY-MM-DD
+
+            // Tambahkan transaksi ke dalam daftar `transactions`
+            this.transactions.push({
+              transactionId: transactionId,
+              memberName: this.memberName,
+              wasteType: Object.entries(this.selectedWasteDetails)
+                .map(([waste, qty]) => `${waste} (${qty} kg)`) // Format string jenis sampah dan kuantitas
+                .join(", "),
+              quantity: this.totalQuantity, // Total kuantitas semua jenis sampah
+              totalValue: totalVal, // Total nilai transaksi
+              date: date, // Tanggal transaksi
+            });
+          },
+
+          // Mereset form setelah transaksi selesai atau dibatalkan
+          resetForm() {
+            this.memberName = ""; // Kosongkan nama anggota
+            this.selectedWasteDetails = {}; // Kosongkan pilihan jenis sampah
+          },
+        };
+      }
+    </script>
+  </body>
+</html>
